@@ -1,7 +1,5 @@
 package com.summerland.android.twozerofoureightapp;
 
-import android.annotation.SuppressLint;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
