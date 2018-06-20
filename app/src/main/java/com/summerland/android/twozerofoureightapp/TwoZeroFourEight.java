@@ -1,5 +1,7 @@
 package com.summerland.android.twozerofoureightapp;
 
+import android.annotation.SuppressLint;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
@@ -10,24 +12,24 @@ import java.util.Random;
  */
 public class TwoZeroFourEight implements Serializable {
 
-    public enum actions {ADDNEW, BLANK, SLIDE, COMPACT, REFRESH}
+    public enum actions {ADD_NEW, BLANK, SLIDE, COMPACT, REFRESH}
 
-    static final int TARGET = 2048, GRID_CNT = 16, ROW_CNT = 4, COL_CNT = 4, BLANK = 0;
+    static final int TARGET = 2048;
+    private static final int GRID_CNT = 16, ROW_CNT = 4, COL_CNT = 4, BLANK = 0;
     private int score = 0, numEmpty = 16, maxTile = 0;
 
     private ArrayList<Transition> transitions = null;
     private int[] tiles = new int[16];
     private Random rand = new Random();
 
-    public TwoZeroFourEight() {
+    TwoZeroFourEight() {
         this.createNewTransitions();
         this.addNewTile();
         this.addNewTile();
     }
 
-    public ArrayList<Transition> createNewTransitions() {
+    void createNewTransitions() {
         transitions = new ArrayList<>();
-        return transitions;
     }
 
     public ArrayList<Transition> getTransitions() {
@@ -41,12 +43,11 @@ public class TwoZeroFourEight implements Serializable {
         }
     }
 
-    public int addNewTile() {
-        if (numEmpty == 0) return -1;
+    void addNewTile() {
+        if (numEmpty == 0) return;
 
         int val = (rand.nextInt(2) + 1) * 2;
         int pos = rand.nextInt(numEmpty);
-
         int blanks = 0;
 
         for (int i = 0; i < GRID_CNT; i++) {
@@ -56,30 +57,25 @@ public class TwoZeroFourEight implements Serializable {
                     if (val > maxTile) maxTile = val;
                     numEmpty--;
                     if (transitions != null)
-                        transitions.add(new Transition(actions.ADDNEW, val, i));
-                    return pos;
+                        transitions.add(new Transition(actions.ADD_NEW, val, i));
+                    return;
                 }
                 blanks++;
             }
         }
-        return -1;
     }
 
     public int getMaxTile() {
         return maxTile;
     }
 
-    public int getValue(int index) {
-        return tiles[index];
+    public int getValue(int i) {
+        return (tiles[i]);
     }
 
     public int getScore() {
         return score;
     }
-
-    /*public String getStringValue(int index) {
-        return "" + tiles[index];
-    }*/
 
     public boolean hasMovesRemaining() {
 
@@ -143,7 +139,7 @@ public class TwoZeroFourEight implements Serializable {
     }
 */
 
-    public boolean slideTileRowOrColumn(int index1, int index2, int index3, int index4) {
+    private boolean slideTileRowOrColumn(int index1, int index2, int index3, int index4) {
 
         boolean moved = false;
         int val1 = tiles[index1];
@@ -185,7 +181,7 @@ public class TwoZeroFourEight implements Serializable {
         return moved;
     }
 
-    public boolean slideLeft() {
+    private boolean slideLeft() {
         boolean a, b, c, d;
         a = slideTileRowOrColumn(0, 4, 8, 12);
         b = slideTileRowOrColumn(1, 5, 9, 13);
@@ -194,7 +190,7 @@ public class TwoZeroFourEight implements Serializable {
         return (a || b || c || d);
     }
 
-    public boolean slideRight() {
+    private boolean slideRight() {
         boolean a, b, c, d;
         a = slideTileRowOrColumn(12, 8, 4, 0);
         b = slideTileRowOrColumn(13, 9, 5, 1);
@@ -203,7 +199,7 @@ public class TwoZeroFourEight implements Serializable {
         return (a || b || c || d);
     }
 
-    public boolean slideUp() {
+    private boolean slideUp() {
         boolean a, b, c, d;
         a = slideTileRowOrColumn(0, 1, 2, 3);
         b = slideTileRowOrColumn(4, 5, 6, 7);
@@ -212,7 +208,7 @@ public class TwoZeroFourEight implements Serializable {
         return (a || b || c || d);
     }
 
-    public boolean slideDown() {
+    private boolean slideDown() {
         boolean a, b, c, d;
         a = slideTileRowOrColumn(3, 2, 1, 0);
         b = slideTileRowOrColumn(7, 6, 5, 4);
@@ -221,7 +217,7 @@ public class TwoZeroFourEight implements Serializable {
         return (a || b || c || d);
     }
 
-    public boolean compactTileRowOrColumn(int indx1, int indx2, int indx3, int indx4) {
+    private boolean compactTileRowOrColumn(int index1, int index2, int index3, int index4) {
 
         boolean compacted = false;
 
@@ -229,22 +225,22 @@ public class TwoZeroFourEight implements Serializable {
             int val1 = 0, val2 = 0, tmpI = 0, tmpJ = 0;
             switch (j) {
                 case 1:
-                    val1 = tiles[indx1];
-                    val2 = tiles[indx2];
-                    tmpI = indx1;
-                    tmpJ = indx2;
+                    val1 = tiles[index1];
+                    val2 = tiles[index2];
+                    tmpI = index1;
+                    tmpJ = index2;
                     break;
                 case 2:
-                    val1 = tiles[indx2];
-                    val2 = tiles[indx3];
-                    tmpI = indx2;
-                    tmpJ = indx3;
+                    val1 = tiles[index2];
+                    val2 = tiles[index3];
+                    tmpI = index2;
+                    tmpJ = index3;
                     break;
                 case 3:
-                    val1 = tiles[indx3];
-                    val2 = tiles[indx4];
-                    tmpI = indx3;
-                    tmpJ = indx4;
+                    val1 = tiles[index3];
+                    val2 = tiles[index4];
+                    tmpI = index3;
+                    tmpJ = index4;
                     break;
                 default:
                     break;
@@ -266,7 +262,7 @@ public class TwoZeroFourEight implements Serializable {
         return compacted;
     }
 
-    public boolean compactLeft() {
+    private boolean compactLeft() {
         boolean a, b, c, d;
         a = compactTileRowOrColumn(0, 4, 8, 12);
         b = compactTileRowOrColumn(1, 5, 9, 13);
@@ -275,7 +271,7 @@ public class TwoZeroFourEight implements Serializable {
         return (a || b || c || d);
     }
 
-    public boolean compactRight() {
+    private boolean compactRight() {
         boolean a, b, c, d;
         a = compactTileRowOrColumn(12, 8, 4, 0);
         b = compactTileRowOrColumn(13, 9, 5, 1);
@@ -284,7 +280,7 @@ public class TwoZeroFourEight implements Serializable {
         return (a || b || c || d);
     }
 
-    public boolean compactUp() {
+    private boolean compactUp() {
         boolean a, b, c, d;
         a = compactTileRowOrColumn(0, 1, 2, 3);
         b = compactTileRowOrColumn(4, 5, 6, 7);
@@ -293,7 +289,7 @@ public class TwoZeroFourEight implements Serializable {
         return (a || b || c || d);
     }
 
-    public boolean compactDown() {
+    private boolean compactDown() {
         boolean a, b, c, d;
         a = compactTileRowOrColumn(3, 2, 1, 0);
         b = compactTileRowOrColumn(7, 6, 5, 4);
@@ -345,19 +341,19 @@ public class TwoZeroFourEight implements Serializable {
                 "--------------------\n";
     }
 
-    protected class Transition implements Serializable {
+    class Transition implements Serializable {
 
         actions type;
         int val = 0, posStart = -1, posFinal = -1;
 
-        public Transition(actions action, int val, int posStart, int posFinal) {
+        Transition(actions action, int val, int posStart, int posFinal) {
             type = action;
             this.val = val;
             this.posStart = posStart;
             this.posFinal = posFinal;
         }
 
-        public Transition(actions action, int val, int posFinal) {
+        Transition(actions action, int val, int posFinal) {
             type = action;
             this.val = val;
             this.posFinal = posFinal;

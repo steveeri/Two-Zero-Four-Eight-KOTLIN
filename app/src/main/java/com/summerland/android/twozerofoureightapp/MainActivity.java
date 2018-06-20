@@ -10,11 +10,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
-    static private float MIN_DISTANCE = 200;
-    private float x1 = 0, y1 = 0, x2 = 0, y2 = 0;
+    private float x1 = 0, y1 = 0;
     private TwoZeroFourEight game;
     private int[] cells = new int[16];
 
@@ -94,8 +94,10 @@ public class MainActivity extends AppCompatActivity {
                 break;
             }
             case MotionEvent.ACTION_UP: {
-                x2 = event.getX();
-                y2 = event.getY();
+                float x2 = event.getX();
+                float y2 = event.getY();
+
+                int MIN_DISTANCE = 200;
 
                 //if left to right sweep event on screen
                 if (x1 < x2 && x2 - x1 > MIN_DISTANCE) {
@@ -142,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
 
         TextView tv;
         tv = (TextView) findViewById(R.id.score);
-        tv.setText("Score: " + game.getScore());
+        tv.setText(String.format(Locale.ENGLISH,"Score: %1$d", game.getScore()));
 
         ArrayList<TwoZeroFourEight.Transition> transitions = game.getTransitions();
         if (transitions == null || transitions.size() == 0) return;
@@ -216,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
         if (val == 0) {
             tv.setText("");
         } else {
-            tv.setText("" + val);
+            tv.setText(String.format(Locale.ENGLISH,"%1$d",val));
         }
 
         int tx_col = getResources().getColor(R.color.t_dark_text, null);
