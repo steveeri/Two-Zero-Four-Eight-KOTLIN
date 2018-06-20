@@ -134,7 +134,7 @@ import android.widget.Toast
             Toast.makeText(this, "SORRY, NO MORE MOVES.  PLAY AGAIN?", Toast.LENGTH_LONG).show()
         }
 
-        Log.i("Logm", game.toString())
+        //Log.i("Logm", game.toString())
 
         val tv: TextView = findViewById(R.id.score) as TextView
         tv.text = StringBuffer("Score: ").append(game.score)
@@ -161,7 +161,7 @@ import android.widget.Toast
             //Log.i("Logm", "About to do paint compact w=$w h=$h t=$t")
             try {
                 paintCell(tv, trans.value)
-                Thread.sleep(500)
+                Thread.sleep(50)
             } catch (e: Exception) {
                 e.printStackTrace()
             } finally {
