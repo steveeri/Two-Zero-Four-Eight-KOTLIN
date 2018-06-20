@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="grid_background">#cfc2bc</color>
+    <color name="t_light_text">#fafafa</color>
+    <color name="t_dark_text">#030100</color>
+    <color name="t_Merge">#030100</color>
+    <color name="t0_bg">#cfc4c4</color>
+    <color name="t2_bg">#eae6e5</color>
+    <color name="t4_bg">#dccfc6</color>
+    <color name="t8_bg">#fab16d</color>
+    <color name="t16_bg">#efa346</color>
+    <color name="t32_bg">#f78d31</color>
+    <color name="t64_bg">#f78d31</color>
+    <color name="t128_bg">#f5bf35</color>
+    <color name="t256_bg">#fdec61</color>
+    <color name="t512_bg">#fdec61</color>
+    <color name="t1024_bg">#50fa3b</color>
+    <color name="t2048_bg">#f18ef1</color>
+    <color name="colorPrimary">#FF5722</color>
+    <color name="colorPrimaryDark">#512DA8</color>
+    <color name="colorAccent">#FF5722</color>
+    <color name="primary">#673AB7</color>
+    <color name="primary_dark">#512DA8</color>
+    <color name="primary_light">#D1C4E9</color>
+    <color name="accent">#FF5722</color>
+    <color name="primary_text">#212121</color>
+    <color name="secondary_text">#757575</color>
+    <color name="icons">#FFFFFF</color>
+    <color name="divider">#BDBDBD</color>
+</resources>
