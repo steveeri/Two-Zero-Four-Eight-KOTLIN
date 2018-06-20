@@ -17,6 +17,7 @@ public class MainActivity extends AppCompatActivity {
     private float x1 = 0, y1 = 0;
     private TwoZeroFourEight game;
     private int[] cells = new int[16];
+    private static final String GAME_KEY = "TZFE_GAME_KEY";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         Log.i("Logm", "Inside on create main activity method");
 
         if (savedInstanceState != null) {
-            TwoZeroFourEight tmpGame = (TwoZeroFourEight) savedInstanceState.getSerializable("GAME_KEY");
+            TwoZeroFourEight tmpGame = (TwoZeroFourEight) savedInstanceState.getSerializable(GAME_KEY);
             if (tmpGame != null) {
                 game = tmpGame;
                 game.rePlot();
@@ -67,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
         Log.i("Logm", "Inside onRestoreInstanceState method");
         if (savedInstanceState != null) {
-            TwoZeroFourEight tmpGame = (TwoZeroFourEight) savedInstanceState.getSerializable("GAME_KEY");
+            TwoZeroFourEight tmpGame = (TwoZeroFourEight) savedInstanceState.getSerializable(GAME_KEY);
             if (tmpGame != null) {
                 game = tmpGame;
                 game.rePlot();
@@ -153,29 +154,7 @@ public class MainActivity extends AppCompatActivity {
             paintTransition(trans);
         }
 
-/*        for (int i = 0; i < TwoZeroFourEight.GRID_CNT; i++) {
-            if (game.getValue(i) == 0)
-                paintCell(findViewById(cells[i]), game.getValue(i));
-        }*/
-
         game.createNewTransitions();
-
-        /*paintCell(findViewById(R.id.index0), game.getValue(0));
-        paintCell(findViewById(R.id.index1), game.getValue(1));
-        paintCell(findViewById(R.id.index2), game.getValue(2));
-        paintCell(findViewById(R.id.index3), game.getValue(3));
-        paintCell(findViewById(R.id.index4), game.getValue(4));
-        paintCell(findViewById(R.id.index5), game.getValue(5));
-        paintCell(findViewById(R.id.index6), game.getValue(6));
-        paintCell(findViewById(R.id.index7), game.getValue(7));
-        paintCell(findViewById(R.id.index8), game.getValue(8));
-        paintCell(findViewById(R.id.index9), game.getValue(9));
-        paintCell(findViewById(R.id.index10), game.getValue(10));
-        paintCell(findViewById(R.id.index11), game.getValue(11));
-        paintCell(findViewById(R.id.index12), game.getValue(12));
-        paintCell(findViewById(R.id.index13), game.getValue(13));
-        paintCell(findViewById(R.id.index14), game.getValue(14));
-        paintCell(findViewById(R.id.index15), game.getValue(15));*/
     }
 
     private void paintTransition(TwoZeroFourEight.Transition trans) {
@@ -189,23 +168,13 @@ public class MainActivity extends AppCompatActivity {
             float t = tv.getTextSize();
             Log.i("Logm", "About to do paint compact w=" + w + " h=" + h + " t=" + t);
             try {
-                //tv.setShadowLayer(3, 4, Color.GREEN);
-                //tv.setPressed(true);
-                //tv.setHeight(h+5);
-                //tv.setTextSize(getResources().getDimension(R.dimen.tile_txt_compacted));
-                //tv.setShadowLayer(3, 3, 3, getResources().getColor(R.color.t_Merge, null));
                 paintCell(tv, trans.val);
                 wait(500);
-                //tv.setRotation(2);
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
                 paintCell(tv, trans.val);
             }
-            //tv.setWidth(w);
-            //tv.setHeight(h);
-            //tv.setTextSize(getResources().getDimension(R.dimen.tile_txt_normal));
-            //tv.setPressed(false);
         } else {
             paintCell(tv, trans.val);
         }

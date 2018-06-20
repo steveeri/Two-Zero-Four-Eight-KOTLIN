@@ -9,13 +9,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.summerland.android.twozerofoureightapp.MainActivity">
 
-    <Button
-        android:id="@+id/list_item_sound_button"
-        android:layout_width="65dp"
-        android:layout_height="65dp"
-        android:layout_gravity="center"
-        tools:text="16" />
-
     <GridLayout
         android:id="@+id/grid_layout"
         android:layout_width="wrap_content"
