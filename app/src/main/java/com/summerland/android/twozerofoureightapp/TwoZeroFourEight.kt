@@ -15,7 +15,7 @@ class TwoZeroFourEight internal constructor() : Serializable {
     var maxTile = 0
         private set
 
-    var transitions: ArrayList<Transition>? = null
+    lateinit var transitions: ArrayList<Transition>
         private set
     private val tiles = IntArray(16)
     private val rand = Random()
@@ -36,26 +36,25 @@ class TwoZeroFourEight internal constructor() : Serializable {
 
     fun rePlot() {
         this.createNewTransitions()
-        for (i in 0..GRID_CNT) {
-            this.transitions!!.add(Transition(Actions.REFRESH, tiles[i], i))
+        for (i in 0..(GRID_CNT-1)) {
+            this.transitions.add(Transition(Actions.REFRESH, tiles[i], i))
         }
     }
 
     internal fun addNewTile() {
         if (numEmpty == 0) return
 
-        val `val` = (rand.nextInt(2) + 1) * 2
+        val value = (rand.nextInt(2) + 1) * 2
         val pos = rand.nextInt(numEmpty)
         var blanks = 0
 
-        for (i in 0..GRID_CNT) {
+        for (i in 0..(GRID_CNT-1)) {
             if (tiles[i] == BLANK) {
                 if (blanks == pos) {
-                    tiles[i] = `val`
-                    if (`val` > maxTile) maxTile = `val`
+                    tiles[i] = value
+                    if (value > maxTile) maxTile = value
                     numEmpty--
-                    if (transitions != null)
-                        transitions!!.add(Transition(Actions.ADD_NEW, `val`, i))
+                    transitions.add(Transition(Actions.ADD_NEW, value, i))
                     return
                 }
                 blanks++
@@ -72,13 +71,13 @@ class TwoZeroFourEight internal constructor() : Serializable {
         if (numEmpty > 0) return true
 
         // check left-right for compact moves remaining.
-        var arrLimit = GRID_CNT - COL_CNT
+        var arrLimit = (GRID_CNT - COL_CNT) - 1
         for (i in 0..arrLimit) {
             if (tiles[i] == tiles[i + COL_CNT]) return true
         }
 
         // check up-down for compact moves remaining.
-        arrLimit = GRID_CNT - 1
+        arrLimit = GRID_CNT - 2
         for (i in 0..arrLimit) {
             if ((i + 1) % ROW_CNT > 0) {
                 if (tiles[i] == tiles[i + 1]) return true
@@ -92,7 +91,7 @@ class TwoZeroFourEight internal constructor() : Serializable {
         var moved = false
         var val1 = tiles[index1]
         var tmpI = index1
-        for (j in 1..COL_CNT) {
+        for (j in 1..(COL_CNT-1)) {
             var val2 = 0
             var tmpJ = 0
             when (j) {
@@ -115,10 +114,8 @@ class TwoZeroFourEight internal constructor() : Serializable {
             if (val1 == 0 && val2 != 0) {
                 tiles[tmpI] = val2
                 tiles[tmpJ] = 0
-                if (transitions != null) {
-                    transitions!!.add(Transition(Actions.SLIDE, val2, tmpJ, tmpI))
-                    transitions!!.add(Transition(Actions.BLANK, BLANK, tmpJ))
-                }
+                transitions.add(Transition(Actions.SLIDE, val2, tmpJ, tmpI))
+                transitions.add(Transition(Actions.BLANK, BLANK, tmpJ))
                 val1 = 0
                 tmpI = tmpJ
                 moved = true
@@ -166,7 +163,7 @@ class TwoZeroFourEight internal constructor() : Serializable {
 
         var compacted = false
 
-        for (j in 1..COL_CNT) {
+        for (j in 1..(COL_CNT-1)) {
             var val1 = 0
             var val2 = 0
             var tmpI = 0
@@ -197,14 +194,14 @@ class TwoZeroFourEight internal constructor() : Serializable {
             if (val1 != 0 && val1 == val2) {
                 tiles[tmpI] = val1 * 2
                 score += tiles[tmpI]
-                if (tiles[tmpI] > maxTile) maxTile = tiles[tmpI]
+                if (tiles[tmpI] > maxTile) {
+                    maxTile = tiles[tmpI]
+                }
                 numEmpty++
                 tiles[tmpJ] = 0
                 compacted = true
-                if (transitions != null) {
-                    transitions!!.add(Transition(Actions.COMPACT, tiles[tmpI], tmpJ, tmpI))
-                    transitions!!.add(Transition(Actions.BLANK, BLANK, tmpJ))
-                }
+                transitions.add(Transition(Actions.COMPACT, tiles[tmpI], tmpJ, tmpI))
+                transitions.add(Transition(Actions.BLANK, BLANK, tmpJ))
             }
         }
         return compacted

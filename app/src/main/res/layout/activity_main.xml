@@ -370,6 +370,7 @@
         android:layout_alignEnd="@+id/grid_layout"
         android:layout_below="@+id/grid_layout"
         android:layout_marginTop="53dp"
+        android:backgroundTint="@android:color/holo_orange_dark"
         android:onClick="onClick"
         android:text="@string/new_game" />
 
@@ -381,9 +382,10 @@
         android:layout_alignStart="@+id/grid_layout"
         android:layout_marginBottom="77dp"
         android:layout_marginStart="43dp"
+        android:backgroundTint="@android:color/holo_orange_dark"
         android:padding="20dp"
         android:text="@string/blank"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:visibility="invisible" />
+        android:visibility="visible" />
 
 </RelativeLayout>

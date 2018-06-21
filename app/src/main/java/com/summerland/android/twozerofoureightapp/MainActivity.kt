@@ -55,7 +55,7 @@ import android.widget.Toast
 
     override fun onSaveInstanceState(outState: Bundle) {
         Log.i("Logm", "Inside onSaveInstanceState method")
-        outState.putSerializable("GAME_KEY", game)
+        outState.putSerializable(GAME_KEY, game)
         super.onSaveInstanceState(outState)
     }
 
@@ -72,6 +72,7 @@ import android.widget.Toast
         paintTiles()
     }
 
+    @Suppress("UNUSED_PARAMETER")
     fun onClick(view: View) {
         Log.i("Logm", "Inside on click main activity action method")
         val intent = Intent(this, MainActivity::class.java)
@@ -129,18 +130,20 @@ import android.widget.Toast
     private fun paintTiles() {
 
         if (game.maxTile >= TwoZeroFourEight.TARGET) {
-            Toast.makeText(this, "YOU HAVE WON: " + game.maxTile, Toast.LENGTH_LONG).show()
+            Toast.makeText(this, resources.getString(R.string.winner_toast_message) +
+                    game.maxTile, Toast.LENGTH_LONG).show()
+
         } else if (!game.hasMovesRemaining()) {
-            Toast.makeText(this, "SORRY, NO MORE MOVES.  PLAY AGAIN?", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, resources.getString(R.string.lose_toast_message),
+                    Toast.LENGTH_LONG).show()
         }
 
         //Log.i("Logm", game.toString())
-
         val tv: TextView = findViewById(R.id.score) as TextView
-        tv.text = StringBuffer("Score: ").append(game.score)
+        tv.text = StringBuffer(resources.getString(R.string.score)).append(game.score)
 
         val transitions = game.transitions
-        if (transitions == null || transitions.size == 0) return
+        if (transitions.size == 0) return
 
         for (trans in transitions) {
             paintTransition(trans)
@@ -155,13 +158,10 @@ import android.widget.Toast
 
         if (trans.type == TwoZeroFourEight.Actions.COMPACT) {
             //Log.i("Logm", "About to do paint compact")
-            val w = tv.width
-            val h = tv.height
-            val t = tv.textSize
             //Log.i("Logm", "About to do paint compact w=$w h=$h t=$t")
             try {
                 paintCell(tv, trans.value)
-                Thread.sleep(50)
+                Thread.sleep(100)
             } catch (e: Exception) {
                 e.printStackTrace()
             } finally {
@@ -220,6 +220,6 @@ import android.widget.Toast
     }
 
     companion object {
-        private const val GAME_KEY = "TZFE_GAME_KEY"
+        private const val GAME_KEY = "2048_GAME_KEY"
     }
 }

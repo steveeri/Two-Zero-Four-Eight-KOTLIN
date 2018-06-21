@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">2048</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="score">Point score: </string>
+    <string name="best_score">Best</string>
+    <string name="winner_toast_message">W I N N E R! </string>
+    <string name="lose_toast_message">SORRY, NO MORE MOVES.  PLAY AGAIN?</string>
     <string name="new_game">New Game</string>
     <string name="blank"></string>
 </resources>
