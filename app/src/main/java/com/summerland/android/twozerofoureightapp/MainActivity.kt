@@ -161,7 +161,7 @@ import android.widget.Toast
             //Log.i("Logm", "About to do paint compact w=$w h=$h t=$t")
             try {
                 paintCell(tv, trans.value)
-                Thread.sleep(100)
+                //Thread.sleep(100)
             } catch (e: Exception) {
                 e.printStackTrace()
             } finally {
