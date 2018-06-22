@@ -2,7 +2,8 @@
 
 ## Android Kotlin version of the classic 2048 game.
 
-![Screenshot](Screenshot_2048.jpg | width=250)
+![Screenshot](screenshot-2048.png)
+
 
 ## Game Overview
 
