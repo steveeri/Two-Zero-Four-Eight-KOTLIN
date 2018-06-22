@@ -1,14 +1,16 @@
 # Two-Zero-Four-Eight-KOTLIN
 Android Kotlin version of the classic 2048 game.
+![Screenshot](screenshot-2048.jpg)
 
-Game Overview
+
+## Game Overview
 
 2048 is a single-player sliding block puzzle game designed by Italian web developer Gabriele Cirulli. 
 The game's objective is to slide numbered tiles on a grid to combine them to create a tile with the number 2048. 
 However, one can generally continue to play the game after reaching the goal, creating tiles with larger numbers.
 
 
-Game Logic Rules
+## Game Logic Rules
 
 2048 is played on a 4×4 grid, with numbered tiles that slide when a player moves them using directional input matching [ Up, Down, Left, Right ].
 The grid is seeded initially with two randomly placed, and randomly valued tiles of a value of either 2 or 4.
@@ -19,7 +21,7 @@ Generally the higher the value of the tile obtained the more prominant they are 
 A user's rolling or recorded score starts at zero, and is updated by adding the value of any combining tiles during each play cycle. 
 
 
-Winning and Losing
+## Winning and Losing
 
 The game is won when a tile with a value of 2048 appears on the board, hence the name of the game.
 After reaching the 2048 tile players "can generally" continue to play to reach higher scores.  The rolling score calculated as the game progresses has a reflection on the quality and level of progress achieved during play, but is not directly related to the objective of the game overall - which is to achieve a tile in the greid with a value of 2048. 
@@ -27,4 +29,7 @@ The game will otherwise cease when there are no empty cells in the grid, and no 
 The users rolling score at the end of the game will be the sum of all merged tile values obtained.
 
 
-Reference => https://en.wikipedia.org/wiki/2048_(video_game)
+## Reference => https://en.wikipedia.org/wiki/2048_(video_game)
+
+## Licence
+To Be Confirmed
