@@ -1,6 +1,6 @@
 # Two-Zero-Four-Eight-KOTLIN
 Android Kotlin version of the classic 2048 game.
-![Screenshot](screenshot_2048.jpg)
+![Screenshot](Screenshot_2048.jpg)
 
 
 ## Game Overview
