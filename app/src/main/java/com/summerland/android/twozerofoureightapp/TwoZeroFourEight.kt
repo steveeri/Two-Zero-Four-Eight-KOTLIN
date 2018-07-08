@@ -89,39 +89,24 @@ class TwoZeroFourEight internal constructor() : Serializable {
     private fun slideTileRowOrColumn(index1: Int, index2: Int, index3: Int, index4: Int): Boolean {
 
         var moved = false
-        var val1 = tiles[index1]
-        var tmpI = index1
-        for (j in 1..(COL_CNT-1)) {
-            var val2 = 0
-            var tmpJ = 0
-            when (j) {
-                1 -> {
-                    val2 = tiles[index2]
-                    tmpJ = index2
-                }
-                2 -> {
-                    val2 = tiles[index3]
-                    tmpJ = index3
-                }
-                3 -> {
-                    val2 = tiles[index4]
-                    tmpJ = index4
-                }
-                else -> {
-                }
-            }
+        val tmpArr = intArrayOf(index1,index2,index3,index4)
 
-            if (val1 == 0 && val2 != 0) {
-                tiles[tmpI] = val2
-                tiles[tmpJ] = 0
-                transitions.add(Transition(Actions.SLIDE, val2, tmpJ, tmpI))
-                transitions.add(Transition(Actions.BLANK, BLANK, tmpJ))
-                val1 = 0
-                tmpI = tmpJ
+        // Do we have some sliding to do, or not?
+        var es = 0  // empty spot index
+        for (j in 0..(tmpArr.size-1)) {
+            if (tiles[tmpArr[es]] != BLANK) {
+                es++
+                continue
+            } else if (tiles[tmpArr[j]] == BLANK) {
+                continue
+            } else {
+                // Otherwise we have a slide condition
+                tiles[tmpArr[es]] = tiles[tmpArr[j]]
+                tiles[tmpArr[j]] = BLANK
+                transitions.add(Transition(Actions.SLIDE, tiles[tmpArr[es]], tmpArr[j], tmpArr[es]))
+                transitions.add(Transition(Actions.BLANK, BLANK, tmpArr[j]))
                 moved = true
-            } else if (val1 != 0 && val2 == 0) {
-                val1 = 0
-                tmpI = tmpJ
+                es++
             }
         }
         return moved
