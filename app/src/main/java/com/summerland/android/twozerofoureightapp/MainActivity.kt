@@ -94,34 +94,34 @@ import android.widget.Toast
                 val y2 = event.y
 
                 val minDistance = 200
+                var moved = false
 
                 //if left to right sweep event on screen
                 if (x1 < x2 && x2 - x1 > minDistance) {
                     //Toast.makeText(this, "Left to Right Swap Performed", Toast.LENGTH_SHORT).show();
-                    if (game.actionMoveRight()) game.addNewTile()
-                    paintTiles()
+                    moved = game.actionMove(Moves.Right)
                 }
 
                 // if right to left sweep event on screen
+                //Toast.makeText(this, "Right to Left Swap Performed", Toast.LENGTH_SHORT).show();
                 if (x1 > x2 && x1 - x2 > minDistance) {
-                    //Toast.makeText(this, "Right to Left Swap Performed", Toast.LENGTH_SHORT).show();
-                    if (game.actionMoveLeft()) game.addNewTile()
-                    paintTiles()
+                    moved = game.actionMove(Moves.Left)
                 }
 
                 // if UP to Down sweep event on screen
                 if (y1 < y2 && y2 - y1 > minDistance) {
                     //Toast.makeText(this, "UP to Down Swap Performed", Toast.LENGTH_SHORT).show();
-                    if (game.actionMoveDown()) game.addNewTile()
-                    paintTiles()
+                    moved = game.actionMove(Moves.Down)
                 }
 
                 //if Down to UP sweep event on screen
                 if (y1 > y2 && y1 - y2 > minDistance) {
                     //Toast.makeText(this, "Down to UP Swap Performed", Toast.LENGTH_SHORT).show();
-                    if (game.actionMoveUp()) game.addNewTile()
-                    paintTiles()
+                    moved = game.actionMove(Moves.Up)
                 }
+
+                if (moved) paintTiles() // repaint if something moved.
+
             }
         }
         return super.onTouchEvent(event)
@@ -148,15 +148,13 @@ import android.widget.Toast
         for (trans in transitions) {
             paintTransition(trans)
         }
-
-        game.createNewTransitions()
     }
 
     private fun paintTransition(trans: TwoZeroFourEight.Transition) {
 
-        val tv = findViewById(cells[trans.posFinal]) as TextView
+        val tv = findViewById(cells[trans.newLocation]) as TextView
 
-        if (trans.type == TwoZeroFourEight.Actions.COMPACT) {
+        if (trans.type == Actions.Compact) {
             //Log.i("Logm", "About to do paint compact")
             //Log.i("Logm", "About to do paint compact w=$w h=$h t=$t")
             try {

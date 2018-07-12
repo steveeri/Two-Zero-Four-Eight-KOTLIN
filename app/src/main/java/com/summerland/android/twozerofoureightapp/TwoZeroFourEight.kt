@@ -1,13 +1,18 @@
+/*
+ * Created by steve on 17/10/16.
+ * Grid is from bottom left to right, bottom to top.
+ */
+
 package com.summerland.android.twozerofoureightapp
 
 import java.io.Serializable
 import java.util.ArrayList
 import java.util.Random
 
-/**
- * Created by steve on 17/10/16.
- * Grid is from bottom left to right, bottom to top.
- */
+
+enum class Moves { Left, Right, Up, Down }
+enum class Actions { Add, Blank, Slide, Compact, Refresh }
+
 class TwoZeroFourEight internal constructor() : Serializable {
     var score = 0
         private set
@@ -20,28 +25,24 @@ class TwoZeroFourEight internal constructor() : Serializable {
     private val tiles = IntArray(16)
     private val rand = Random()
 
-    enum class Actions {
-        ADD_NEW, BLANK, SLIDE, COMPACT, REFRESH
-    }
-
     init {
         this.createNewTransitions()
         this.addNewTile()
         this.addNewTile()
     }
 
-    internal fun createNewTransitions() {
+    private fun createNewTransitions() {
         transitions = ArrayList()
     }
 
     fun rePlot() {
         this.createNewTransitions()
         for (i in 0..(GRID_CNT-1)) {
-            this.transitions.add(Transition(Actions.REFRESH, tiles[i], i))
+            this.transitions.add(Transition(Actions.Refresh, tiles[i], i))
         }
     }
 
-    internal fun addNewTile() {
+    private fun addNewTile() {
         if (numEmpty == 0) return
 
         val value = (rand.nextInt(2) + 1) * 2
@@ -54,7 +55,7 @@ class TwoZeroFourEight internal constructor() : Serializable {
                     tiles[i] = value
                     if (value > maxTile) maxTile = value
                     numEmpty--
-                    transitions.add(Transition(Actions.ADD_NEW, value, i))
+                    transitions.add(Transition(Actions.Add, value, i))
                     return
                 }
                 blanks++
@@ -103,13 +104,37 @@ class TwoZeroFourEight internal constructor() : Serializable {
                 // Otherwise we have a slide condition
                 tiles[tmpArr[es]] = tiles[tmpArr[j]]
                 tiles[tmpArr[j]] = BLANK
-                transitions.add(Transition(Actions.SLIDE, tiles[tmpArr[es]], tmpArr[j], tmpArr[es]))
-                transitions.add(Transition(Actions.BLANK, BLANK, tmpArr[j]))
+                transitions.add(Transition(Actions.Slide, tiles[tmpArr[es]], tmpArr[es], tmpArr[j]))
+                transitions.add(Transition(Actions.Blank, BLANK, tmpArr[j]))
                 moved = true
                 es++
             }
         }
         return moved
+    }
+
+    private fun compactTileRowOrColumn(index1: Int, index2: Int, index3: Int, index4: Int): Boolean {
+
+        var compacted = false
+        val tmpArr = intArrayOf(index1, index2, index3, index4)
+
+        for (j in 0..(tmpArr.size-2)) {
+
+            if (tiles[tmpArr[j]] != BLANK && tiles[tmpArr[j]] == tiles[tmpArr[j+1]]) { // we found a matching pair
+                val ctv = tiles[tmpArr[j]] * 2   // = compacted tile value
+                tiles[tmpArr[j]] = ctv
+                tiles[tmpArr[j+1]] = BLANK
+                score += ctv
+                if (ctv > maxTile) {
+                    maxTile = ctv
+                }  // is this the biggest tile # so far
+                transitions.add(Transition(Actions.Compact, ctv, tmpArr[j], tmpArr[j+1]))
+                transitions.add(Transition(Actions.Blank, BLANK, tmpArr[j+1]))
+                compacted = true
+                numEmpty++
+            }
+        }
+        return compacted
     }
 
     private fun slideLeft(): Boolean {
@@ -144,54 +169,6 @@ class TwoZeroFourEight internal constructor() : Serializable {
         return a || b || c || d
     }
 
-    private fun compactTileRowOrColumn(index1: Int, index2: Int, index3: Int, index4: Int): Boolean {
-
-        var compacted = false
-
-        for (j in 1..(COL_CNT-1)) {
-            var val1 = 0
-            var val2 = 0
-            var tmpI = 0
-            var tmpJ = 0
-            when (j) {
-                1 -> {
-                    val1 = tiles[index1]
-                    val2 = tiles[index2]
-                    tmpI = index1
-                    tmpJ = index2
-                }
-                2 -> {
-                    val1 = tiles[index2]
-                    val2 = tiles[index3]
-                    tmpI = index2
-                    tmpJ = index3
-                }
-                3 -> {
-                    val1 = tiles[index3]
-                    val2 = tiles[index4]
-                    tmpI = index3
-                    tmpJ = index4
-                }
-                else -> {
-                }
-            }
-
-            if (val1 != 0 && val1 == val2) {
-                tiles[tmpI] = val1 * 2
-                score += tiles[tmpI]
-                if (tiles[tmpI] > maxTile) {
-                    maxTile = tiles[tmpI]
-                }
-                numEmpty++
-                tiles[tmpJ] = 0
-                compacted = true
-                transitions.add(Transition(Actions.COMPACT, tiles[tmpI], tmpJ, tmpI))
-                transitions.add(Transition(Actions.BLANK, BLANK, tmpJ))
-            }
-        }
-        return compacted
-    }
-
     private fun compactLeft(): Boolean {
         val a = compactTileRowOrColumn(0, 4, 8, 12)
         val b = compactTileRowOrColumn(1, 5, 9, 13)
@@ -224,32 +201,53 @@ class TwoZeroFourEight internal constructor() : Serializable {
         return a || b || c || d
     }
 
-    fun actionMoveLeft(): Boolean {
+    private fun actionMoveLeft(): Boolean {
         val a = slideLeft()
         val b = compactLeft()
         val c = slideLeft()
         return a || b || c
     }
 
-    fun actionMoveRight(): Boolean {
+    private fun actionMoveRight(): Boolean {
         val a = slideRight()
         val b = compactRight()
         val c = slideRight()
         return a || b || c
     }
 
-    fun actionMoveUp(): Boolean {
+    private fun actionMoveUp(): Boolean {
         val a = slideUp()
         val b = compactUp()
         val c = slideUp()
         return a || b || c
     }
 
-    fun actionMoveDown(): Boolean {
+    private fun actionMoveDown(): Boolean {
         val a = slideDown()
         val b = compactDown()
         val c = slideDown()
         return a || b || c
+    }
+
+
+    // Central game move trigger
+    // Central game move trigger
+    fun actionMove(move: Moves): Boolean {
+
+        this.createNewTransitions()
+        if (!hasMovesRemaining()) return false
+
+        val result = when (move) {
+            Moves.Left -> actionMoveLeft()
+            Moves.Right -> actionMoveRight()
+            Moves.Up -> actionMoveUp()
+            Moves.Down -> actionMoveDown()
+        }
+
+        if (result) {
+            addNewTile()
+        }
+        return result
     }
 
     override fun toString(): String {
@@ -262,24 +260,25 @@ class TwoZeroFourEight internal constructor() : Serializable {
                 "--------------------\n"
     }
 
+
     inner class Transition : Serializable {
 
         var type: Actions
         var value = 0
-        private var posStart = -1
-        var posFinal = -1
+        var newLocation = -1
+        var oldLocation = -1
 
-        constructor(action: Actions, value: Int, posStart: Int, posFinal: Int) {
+        constructor(action: Actions, value: Int, newLocation: Int, oldLocation: Int) {
             type = action
             this.value = value
-            this.posStart = posStart
-            this.posFinal = posFinal
+            this.newLocation = newLocation
+            this.oldLocation = oldLocation
         }
 
-        constructor(action: Actions, value: Int, posFinal: Int) {
+        constructor(action: Actions, value: Int, newLocation: Int) {
             type = action
             this.value = value
-            this.posFinal = posFinal
+            this.newLocation = newLocation
         }
     }
 
