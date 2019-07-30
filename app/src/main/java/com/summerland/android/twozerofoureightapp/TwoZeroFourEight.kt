@@ -36,7 +36,7 @@ class TwoZeroFourEight internal constructor() : Serializable {
 
     fun rePlot() {
         this.createNewTransitions()
-        for (i in 0..(GRID_CNT-1)) {
+        for (i in 0 until (GRID_CNT-1)) {
             this.transitions.add(Transition(Actions.REFRESH, tiles[i], i))
         }
     }
@@ -48,7 +48,7 @@ class TwoZeroFourEight internal constructor() : Serializable {
         val pos = rand.nextInt(numEmpty)
         var blanks = 0
 
-        for (i in 0..(GRID_CNT-1)) {
+        for (i in 0 until (GRID_CNT-1)) {
             if (tiles[i] == BLANK) {
                 if (blanks == pos) {
                     tiles[i] = value
@@ -93,7 +93,7 @@ class TwoZeroFourEight internal constructor() : Serializable {
 
         // Do we have some sliding to do, or not?
         var es = 0  // empty spot index
-        for (j in 0..(tmpArr.size-1)) {
+        for (j in 0 until (tmpArr.size-1)) {
             if (tiles[tmpArr[es]] != BLANK) {
                 es++
                 continue
@@ -148,7 +148,7 @@ class TwoZeroFourEight internal constructor() : Serializable {
 
         var compacted = false
 
-        for (j in 1..(COL_CNT-1)) {
+        for (j in 1 until (COL_CNT-1)) {
             var val1 = 0
             var val2 = 0
             var tmpI = 0
