@@ -9,6 +9,7 @@ import java.util.Random
  * Grid is from bottom left to right, bottom to top.
  */
 class TwoZeroFourEight internal constructor() : Serializable {
+
     var score = 0
         private set
     private var numEmpty = 16
@@ -20,9 +21,7 @@ class TwoZeroFourEight internal constructor() : Serializable {
     private val tiles = IntArray(16)
     private val rand = Random()
 
-    enum class Actions {
-        ADD_NEW, BLANK, SLIDE, COMPACT, REFRESH
-    }
+    enum class Actions { ADD_NEW, BLANK, SLIDE, COMPACT, REFRESH }
 
     init {
         this.createNewTransitions()
@@ -30,8 +29,8 @@ class TwoZeroFourEight internal constructor() : Serializable {
         this.addNewTile()
     }
 
-    internal fun createNewTransitions() {
-        transitions = ArrayList()
+    private fun createNewTransitions() {
+        this.transitions = ArrayList()
     }
 
     fun rePlot() {
@@ -41,7 +40,7 @@ class TwoZeroFourEight internal constructor() : Serializable {
         }
     }
 
-    internal fun addNewTile() {
+    private fun addNewTile() {
         if (numEmpty == 0) return
 
         val value = (rand.nextInt(2) + 1) * 2

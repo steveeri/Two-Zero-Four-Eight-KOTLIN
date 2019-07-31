@@ -99,25 +99,25 @@ import android.widget.Toast
                 //if left to right sweep event on screen
                 if (x1 < x2 && x2 - x1 > minDistance) {
                     //Toast.makeText(this, "Left to Right Swap Performed", Toast.LENGTH_SHORT).show();
-                    moved = game.actionMove(Moves.Right)
+                    moved = game.actionMoveRight()
                 }
 
                 // if right to left sweep event on screen
                 //Toast.makeText(this, "Right to Left Swap Performed", Toast.LENGTH_SHORT).show();
                 if (x1 > x2 && x1 - x2 > minDistance) {
-                    moved = game.actionMove(Moves.Left)
+                    moved = game.actionMoveLeft()
                 }
 
                 // if UP to Down sweep event on screen
                 if (y1 < y2 && y2 - y1 > minDistance) {
                     //Toast.makeText(this, "UP to Down Swap Performed", Toast.LENGTH_SHORT).show();
-                    moved = game.actionMove(Moves.Down)
+                    moved = game.actionMoveDown()
                 }
 
                 //if Down to UP sweep event on screen
                 if (y1 > y2 && y1 - y2 > minDistance) {
                     //Toast.makeText(this, "Down to UP Swap Performed", Toast.LENGTH_SHORT).show();
-                    moved = game.actionMove(Moves.Up)
+                    moved = game.actionMoveUp()
                 }
 
                 if (moved) paintTiles() // repaint if something moved.
@@ -139,7 +139,7 @@ import android.widget.Toast
         }
 
         //Log.i("Logm", game.toString())
-        val tv: TextView = findViewById(R.id.score) as TextView
+        val tv: TextView = findViewById(R.id.score)
         tv.text = StringBuffer(resources.getString(R.string.score)).append(game.score)
 
         val transitions = game.transitions
@@ -152,9 +152,9 @@ import android.widget.Toast
 
     private fun paintTransition(trans: TwoZeroFourEight.Transition) {
 
-        val tv = findViewById(cells[trans.newLocation]) as TextView
+        val tv = findViewById<TextView>(cells[trans.posFinal])
 
-        if (trans.type == Actions.Compact) {
+        if (trans.type == TwoZeroFourEight.Actions.COMPACT) {
             //Log.i("Logm", "About to do paint compact")
             //Log.i("Logm", "About to do paint compact w=$w h=$h t=$t")
             try {

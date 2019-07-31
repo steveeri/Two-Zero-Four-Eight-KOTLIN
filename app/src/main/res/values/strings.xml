@@ -6,4 +6,6 @@
     <string name="lose_toast_message">SORRY, NO MORE MOVES.  PLAY AGAIN?</string>
     <string name="new_game">New Game</string>
     <string name="blank"></string>
+    <string name="game_data_preference_key">au.com.summerland.tzfe.game.data</string>
+    <string name="game_data_highest_score_int_key">tzfe.highest.score.int</string>
 </resources>
