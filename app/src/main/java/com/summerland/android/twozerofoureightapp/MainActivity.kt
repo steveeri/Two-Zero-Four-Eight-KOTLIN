@@ -1,6 +1,5 @@
 package com.summerland.android.twozerofoureightapp
 
-import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
@@ -8,20 +7,25 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import com.summerland.android.tzfe.game.engine.*
 
 
-    class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), GameEngineProtocol {
 
     private var x1 = 0f
     private var y1 = 0f
     private lateinit var game: TwoZeroFourEight
-    private var cells = IntArray(16)
+    private lateinit var dataStore : StoredDataUtils
+    private var highScore : Int = 0
+    private val cells = IntArray(16)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        dataStore = StoredDataUtils(this.baseContext)
 
-        cells = IntArray(16)
+        Log.i("Logm", "Inside on create main activity method")
+
         cells[0] = R.id.index0
         cells[1] = R.id.index1
         cells[2] = R.id.index2
@@ -39,18 +43,16 @@ import android.widget.Toast
         cells[14] = R.id.index14
         cells[15] = R.id.index15
 
-        Log.i("Logm", "Inside on create main activity method")
-
         if (savedInstanceState != null) {
-            val tmpGame :TwoZeroFourEight? = savedInstanceState.getSerializable(GAME_KEY) as TwoZeroFourEight
+            val tmpGame : TwoZeroFourEight? = savedInstanceState.getSerializable(GAME_KEY) as TwoZeroFourEight
             if (tmpGame != null) {
                 game = tmpGame
-                game.rePlot()
+                game.replotBoard()
             }
         } else {
-            game = TwoZeroFourEight()
+            game = TwoZeroFourEight(this)
+            this.setupNewGame()
         }
-        paintTiles()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -66,17 +68,23 @@ import android.widget.Toast
             val tmpGame :TwoZeroFourEight? = savedInstanceState.getSerializable(GAME_KEY) as TwoZeroFourEight
             if (tmpGame != null) {
                 game = tmpGame
-                game.rePlot()
+                game.replotBoard()
             }
         }
-        paintTiles()
     }
 
     @Suppress("UNUSED_PARAMETER")
     fun onClick(view: View) {
         Log.i("Logm", "Inside on click main activity action method")
-        val intent = Intent(this, MainActivity::class.java)
-        startActivity(intent)
+        this.setupNewGame()
+    }
+
+    // Start / Reset game here ->
+    private fun setupNewGame() {
+        this.highScore = dataStore.getHighscore()
+        //this.gamePanel.resetBoard()
+        game.newGame(this.highScore)
+        this.userScoreChanged(0)
     }
 
     // onTouchEvent () method gets called when User performs any touch event on screen
@@ -84,7 +92,7 @@ import android.widget.Toast
     override fun onTouchEvent(event: MotionEvent): Boolean {
 
         when (event.action) {
-        // when user first touches the screen we get x and y coordinate
+            // when user first touches the screen we get x and y coordinate
             MotionEvent.ACTION_DOWN -> {
                 x1 = event.x
                 y1 = event.y
@@ -92,93 +100,35 @@ import android.widget.Toast
             MotionEvent.ACTION_UP -> {
                 val x2 = event.x
                 val y2 = event.y
-
                 val minDistance = 200
-                var moved = false
 
-                //if left to right sweep event on screen
-                if (x1 < x2 && x2 - x1 > minDistance) {
-                    //Toast.makeText(this, "Left to Right Swap Performed", Toast.LENGTH_SHORT).show();
-                    moved = game.actionMoveRight()
-                }
-
-                // if right to left sweep event on screen
-                //Toast.makeText(this, "Right to Left Swap Performed", Toast.LENGTH_SHORT).show();
-                if (x1 > x2 && x1 - x2 > minDistance) {
-                    moved = game.actionMoveLeft()
-                }
-
-                // if UP to Down sweep event on screen
-                if (y1 < y2 && y2 - y1 > minDistance) {
-                    //Toast.makeText(this, "UP to Down Swap Performed", Toast.LENGTH_SHORT).show();
-                    moved = game.actionMoveDown()
-                }
-
-                //if Down to UP sweep event on screen
-                if (y1 > y2 && y1 - y2 > minDistance) {
-                    //Toast.makeText(this, "Down to UP Swap Performed", Toast.LENGTH_SHORT).show();
-                    moved = game.actionMoveUp()
-                }
-
-                if (moved) paintTiles() // repaint if something moved.
-
+                if (x1 < x2 && x2 - x1 > minDistance) { game.actionMove(GameMoves.Right) }
+                else if (x1 > x2 && x1 - x2 > minDistance) { game.actionMove(GameMoves.Left) }
+                else if (y1 < y2 && y2 - y1 > minDistance) { game.actionMove(GameMoves.Down) }
+                else if (y1 > y2 && y1 - y2 > minDistance) { game.actionMove(GameMoves.Up) }
             }
         }
         return super.onTouchEvent(event)
     }
 
-    private fun paintTiles() {
+    private fun paintTransition(move: GameEngine.Transition) {
 
-        if (game.maxTile >= TwoZeroFourEight.TARGET) {
-            Toast.makeText(this, resources.getString(R.string.winner_toast_message) +
-                    game.maxTile, Toast.LENGTH_LONG).show()
+        val tv = findViewById<TextView>(cells[move.location])
 
-        } else if (!game.hasMovesRemaining()) {
-            Toast.makeText(this, resources.getString(R.string.lose_toast_message),
-                    Toast.LENGTH_LONG).show()
-        }
-
-        //Log.i("Logm", game.toString())
-        val tv: TextView = findViewById(R.id.score)
-        tv.text = StringBuffer(resources.getString(R.string.score)).append(game.score)
-
-        val transitions = game.transitions
-        if (transitions.size == 0) return
-
-        for (trans in transitions) {
-            paintTransition(trans)
-        }
-    }
-
-    private fun paintTransition(trans: TwoZeroFourEight.Transition) {
-
-        val tv = findViewById<TextView>(cells[trans.posFinal])
-
-        if (trans.type == TwoZeroFourEight.Actions.COMPACT) {
+        if (move.action == TileMoveType.Slide || move.action == TileMoveType.Merge) {
             //Log.i("Logm", "About to do paint compact")
             //Log.i("Logm", "About to do paint compact w=$w h=$h t=$t")
-            try {
-                paintCell(tv, trans.value)
-                //Thread.sleep(100)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            } finally {
-                paintCell(tv, trans.value)
-            }
+            paintCell(tv, move.value)
+            this.paintTransition(GameEngine.Transition(TileMoveType.Clear, 0, move.oldLocation))
         } else {
-            paintCell(tv, trans.value)
+            paintCell(tv, move.value)
         }
     }
 
     private fun paintCell(obj: Any, value: Int) {
 
         val tv = obj as TextView
-
-        if (value == 0) {
-            tv.text = ""
-        } else {
-            tv.text = StringBuffer("").append(value)
-        }
+        tv.text = if (value <= 0) "" else "$value"
 
         var txCol = resources.getColor(R.color.t_dark_text, null)
         var bgCol = resources.getColor(R.color.t0_bg, null)
@@ -210,11 +160,36 @@ import android.widget.Toast
             512 -> bgCol = resources.getColor(R.color.t512_bg, null)
             1024 -> bgCol = resources.getColor(R.color.t1024_bg, null)
             2048 -> bgCol = resources.getColor(R.color.t2048_bg, null)
-            else -> {
-            }
+            else -> { } // won't happen
         }
         tv.setBackgroundColor(bgCol)
         tv.setTextColor(txCol)
+    }
+
+    override fun userWin() {
+        Toast.makeText(this, resources.getString(R.string.winner_toast_message) +
+                game.maxTile, Toast.LENGTH_LONG).show()
+    }
+
+    override fun userFail() {
+        Toast.makeText(this, resources.getString(R.string.lose_toast_message),
+                Toast.LENGTH_LONG).show()
+    }
+
+    override fun userPB(score: Int) {
+        Toast.makeText(this, resources.getString(R.string.personalbest_toast_message),
+                Toast.LENGTH_SHORT).show()
+        this.dataStore.putHighscore(score)
+        this.highScore = score
+    }
+
+    override fun userScoreChanged(score: Int) {
+        val tv: TextView = findViewById(R.id.score)
+        tv.text = StringBuffer(resources.getString(R.string.score)).append(score)
+    }
+
+    override fun updateTileValue(move: GameEngine.Transition) {
+        paintTransition(move)
     }
 
     companion object {

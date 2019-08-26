@@ -4,6 +4,7 @@
     <string name="best_score">Best</string>
     <string name="winner_toast_message">W I N N E R! </string>
     <string name="lose_toast_message">SORRY, NO MORE MOVES.  PLAY AGAIN?</string>
+    <string name="personalbest_toast_message">WOW, YOU HAVE REACHED A NEW PERSONAL BEST?</string>
     <string name="new_game">New Game</string>
     <string name="blank"></string>
     <string name="game_data_preference_key">au.com.summerland.tzfe.game.data</string>
