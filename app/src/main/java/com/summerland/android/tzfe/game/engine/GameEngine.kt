@@ -32,10 +32,8 @@ open class GameEngine : Serializable {
     private val colCnt = Constants.DIMENSION
     private val blankTile = Constants.EMPTY_TILE_VAL
 
-    var score = 0
-        private set
-    var previousHighScore = 0
-        private set
+    private var score = 0
+    private var previousHighScore = 0
     var maxTile = Constants.EMPTY_TILE_VAL
         private set
 
