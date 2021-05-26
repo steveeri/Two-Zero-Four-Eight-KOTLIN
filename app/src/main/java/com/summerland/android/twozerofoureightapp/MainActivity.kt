@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity(), GameEngineProtocol {
         cells[15] = R.id.index15
 
         if (savedInstanceState != null) {
-            val tmpGame : TwoZeroFourEight? = savedInstanceState.getSerializable(GAME_KEY) as TwoZeroFourEight
+            val tmpGame : TwoZeroFourEight? = savedInstanceState.getSerializable(GAME_KEY) as TwoZeroFourEight?
             if (tmpGame != null) {
                 game = tmpGame
                 game.replotBoard()
@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity(), GameEngineProtocol {
         super.onRestoreInstanceState(savedInstanceState)
         Log.i("Logm", "Inside onRestoreInstanceState method")
         if (savedInstanceState != null) {
-            val tmpGame :TwoZeroFourEight? = savedInstanceState.getSerializable(GAME_KEY) as TwoZeroFourEight
+            val tmpGame :TwoZeroFourEight? = savedInstanceState.getSerializable(GAME_KEY) as TwoZeroFourEight?
             if (tmpGame != null) {
                 game = tmpGame
                 game.replotBoard()

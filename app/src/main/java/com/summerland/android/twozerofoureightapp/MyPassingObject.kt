@@ -7,7 +7,7 @@ import java.io.Serializable
  */
 class MyPassingObject : Serializable {
 
-    val myStrName = "Bob"
+    private val myStrName = "Bob"
 
     override fun toString(): String {
         return super.toString() + "myStrName = " + myStrName

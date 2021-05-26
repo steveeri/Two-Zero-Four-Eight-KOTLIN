@@ -23,9 +23,7 @@ enum class TileMoveType { Add, Slide, Merge, Clear, Reset }
 // The core of the 2048 game logic
 // Game board moves are tracked via the compilation of transitions involved in a tile movement.
 // The game engine uses constants values found in the Constants.swift class
-open class GameEngine : Serializable {
-
-    private var delegate: GameEngineProtocol
+open class GameEngine(private var delegate: GameEngineProtocol) : Serializable {
 
     private val gridCount = Constants.TILE_CNT
     private val rowCnt = Constants.DIMENSION
@@ -45,10 +43,6 @@ open class GameEngine : Serializable {
     private var tiles : ArrayList<Int> = ArrayList()
 
     private val rand = Random()
-
-    constructor(delegate: GameEngineProtocol) {
-        this.delegate = delegate
-    }
 
     // Reset the playing board, and generate rendering transition records
     open fun newGame(newHighScore: Int) {
@@ -88,12 +82,12 @@ open class GameEngine : Serializable {
         return GameBoardRecord(tiles, score, numEmpty, gameOver, maxTile)
     }
 
-    fun acheivedTarget() : Boolean {
+    fun achievedTarget() : Boolean {
         return (maxTile >= Constants.WIN_TARGET)
     }
 
     fun getTileValue(at: Int) : Int {
-        if (at >= 0 && at < gridCount) {
+        if (at in 0 until gridCount) {
             return tiles[at]
         }
         return 0
@@ -295,7 +289,7 @@ open class GameEngine : Serializable {
     // THIS FUNCTION IS THE MAIN CONTROLLER FOR GAME MOVES
     fun actionMove(move : GameMoves) : Boolean {
 
-        var tempScore = this.score
+        val tempScore = this.score
 
         // Clean the transition record as we are doing a new move action.
         this.transitions = ArrayList()
@@ -371,34 +365,19 @@ open class GameEngine : Serializable {
     }
 
     // Tile movement instructions record for the game board renderer
-    class Transition : Serializable {
-        var action: TileMoveType
-        var value: Int
-        var location: Int
-        var oldLocation: Int
-
-        constructor(action: TileMoveType, value: Int, location: Int, oldLocation: Int = -1) {
-            this.action = action
-            this.value = value
-            this.location = location
-            this.oldLocation = oldLocation
-        }
-    }
+    class Transition(
+        var action: TileMoveType,
+        var value: Int,
+        var location: Int,
+        var oldLocation: Int = -1
+    ) : Serializable
 
     // Snapshot Object containing the status of previous game moves
-    class GameBoardRecord : Serializable {
-        var tiles: ArrayList<Int>
-        var score: Int
-        var numEmpty: Int
-        var gameOver: Boolean
+    class GameBoardRecord(
+        var tiles: ArrayList<Int>,
+        var score: Int,
+        var numEmpty: Int,
+        var gameOver: Boolean,
         var maxTile: Int
-
-        constructor(tiles: ArrayList<Int>, score: Int, numEmpty: Int, gameOver: Boolean, maxTile: Int) {
-            this.tiles = tiles
-            this.score = score
-            this.numEmpty = numEmpty
-            this.gameOver = gameOver
-            this.maxTile = maxTile
-        }
-    }
+    ) : Serializable
 }
