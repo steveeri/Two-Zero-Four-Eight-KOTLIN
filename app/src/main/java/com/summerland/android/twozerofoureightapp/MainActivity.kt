@@ -1,26 +1,40 @@
 package com.summerland.android.twozerofoureightapp
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.ui.AppBarConfiguration
+import com.summerland.android.twozerofoureightapp.databinding.ActivityMainBinding
 import com.summerland.android.tzfe.game.engine.*
-
 
 class MainActivity : AppCompatActivity(), GameEngineProtocol {
 
+    private lateinit var appBarConfiguration: AppBarConfiguration
+    private lateinit var binding: ActivityMainBinding
+
     private var x1 = 0f
     private var y1 = 0f
+
     private lateinit var game: TwoZeroFourEight
     private lateinit var dataStore : StoredDataUtils
     private var highScore : Int = 0
     private val cells = IntArray(16)
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        setSupportActionBar(binding.toolbar)
+
         setContentView(R.layout.activity_main)
         dataStore = StoredDataUtils(this.baseContext)
 
@@ -61,17 +75,37 @@ class MainActivity : AppCompatActivity(), GameEngineProtocol {
         super.onSaveInstanceState(outState)
     }
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         Log.i("Logm", "Inside onRestoreInstanceState method")
-        if (savedInstanceState != null) {
-            val tmpGame :TwoZeroFourEight? = savedInstanceState.getSerializable(GAME_KEY) as TwoZeroFourEight?
-            if (tmpGame != null) {
-                game = tmpGame
-                game.replotBoard()
-            }
+        val tmpGame :TwoZeroFourEight? = savedInstanceState.getSerializable(GAME_KEY) as TwoZeroFourEight?
+        if (tmpGame != null) {
+            game = tmpGame
+            game.replotBoard()
         }
     }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        // Inflate the menu; this adds items to the action bar if it is present.
+//        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        return when (item.itemId) {
+//            R.id.action_settings -> true
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+//    override fun onSupportNavigateUp(): Boolean {
+//        val navController = findNavController(R.id.nav_host_fragment_content_main)
+//        return navController.navigateUp(appBarConfiguration)
+//                || super.onSupportNavigateUp()
+//    }
 
     @Suppress("UNUSED_PARAMETER")
     fun onClick(view: View) {
@@ -173,12 +207,12 @@ class MainActivity : AppCompatActivity(), GameEngineProtocol {
 
     override fun userFail() {
         Toast.makeText(this, resources.getString(R.string.lose_toast_message),
-                Toast.LENGTH_LONG).show()
+            Toast.LENGTH_LONG).show()
     }
 
     override fun userPB(score: Int) {
         Toast.makeText(this, resources.getString(R.string.personalbest_toast_message),
-                Toast.LENGTH_SHORT).show()
+            Toast.LENGTH_SHORT).show()
         this.dataStore.putHighscore(score)
         this.highScore = score
     }
@@ -195,4 +229,5 @@ class MainActivity : AppCompatActivity(), GameEngineProtocol {
     companion object {
         private const val GAME_KEY = "2048_GAME_KEY"
     }
+
 }

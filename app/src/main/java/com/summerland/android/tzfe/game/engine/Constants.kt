@@ -1,8 +1,6 @@
 package com.summerland.android.tzfe.game.engine
 
 import android.graphics.Color
-import android.provider.FontRequest
-import android.support.annotation.FontRes
 
 class Constants {
     companion object {

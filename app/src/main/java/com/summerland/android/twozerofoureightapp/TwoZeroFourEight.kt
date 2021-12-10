@@ -10,9 +10,9 @@ import java.util.*
  */
 class TwoZeroFourEight(delegated: GameEngineProtocol) : GameEngine(delegate = delegated) {
 
-    lateinit var startedPlaying : Date
+    var startedPlaying : Date
         private set
-    lateinit var startLastGame : Date
+    var startLastGame : Date
         private set
 
     init {

@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Two-Zero-Four-Eight-KOTLIN.iml" filepath="$PROJECT_DIR$/Two-Zero-Four-Eight-KOTLIN.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Two-Zero-Four-Eight-KOTLIN.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Two-Zero-Four-Eight-KOTLIN.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/TwoZeroFourEight.iml" filepath="$PROJECT_DIR$/.idea/modules/TwoZeroFourEight.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/TwoZeroFourEight.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/TwoZeroFourEight.app.iml" />
     </modules>
   </component>
 </project>
